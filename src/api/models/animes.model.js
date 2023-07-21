@@ -8,7 +8,8 @@ const animesSchema = new Schema (
         year: {type: Number, required: true},
         genre: [{type: String}],
         description: {type: String},
-        rating: {type: Number},
+        rating: {type: Number, default: 0},
+        races: [{type: String}],
         characters: [{type: Schema.Types.ObjectId, ref: 'character'}],
         image: {type: String, required: false}
     }, {

@@ -133,6 +133,31 @@ const putAnime = async (req, res) => {
         return res.status(500).json(error)
     }
 };
+
+//Método PUT para para introducir nuevas razas en el anime.
+const putAnimeRace = async (req, res) => {
+    try {
+        const animeID = req.params.id;
+        const race = req.body.race;
+
+        const duplicateRace = await Anime.find({$and: [{_id: animeID},{races: {$in: [race]}}]});
+        if(duplicateRace.length > 0) {
+            return res.status(405).json({ message: "Race already exists." });
+        }
+        const updatedAnime = await Anime.findByIdAndUpdate(
+            animeID,
+            { $push: { races: race } },
+            { new: true }
+        );
+        if (!updatedAnime) {
+            return res.status(404).json({ message: "Anime no found." });
+        }
+        console.log("updated anime -------", updatedAnime);
+        return res.status(200).json(updatedAnime);
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+};
  
 
-module.exports = {getAnimeByID, getAnimes, postAnimes, deleteAnime, putAnimeCharacter, putAnime, getAnimeCharacters};
+module.exports = {getAnimeByID, getAnimes, postAnimes, deleteAnime, putAnimeCharacter, putAnime, getAnimeCharacters, putAnimeRace};
