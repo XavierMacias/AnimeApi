@@ -48,10 +48,11 @@ const getAnimeCharacters = async(req, res) => {
 // Método POST para animes.
 const postAnimes =  async (req, res) => {
     try {
-        const { name, year, genre, description, rating, characters, image } = req.body;
+        const { name, year, races, genre, description, rating, characters, image } = req.body;
         const newAnime = new Anime({
             name,
             year,
+            races,
             genre,
             description,
             rating,

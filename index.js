@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 //CORS --> CORS ORIGIN RESOURCE SHARING --> Intercambio de recursos cruzados -> manera de permir el compartir recursos enntre distintos origenes
 app.use(cors({
   origin: "*",
-  methods: ["GET", "POST", "PUT"],
+  methods: ["GET", "POST", "PUT","DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
