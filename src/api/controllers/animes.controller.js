@@ -109,6 +109,30 @@ const putAnimeCharacter = async (req, res) => {
     }
 };
 
+const deleteAnimeCharacter = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const animeID = req.body._id;
+
+        const duplicateChar = await Anime.find({$and: [{_id: animeID},{characters: {$in: [id]}}]});
+        if(duplicateChar.length == 0) {
+            return res.status(405).json({ message: "Character not exists." });
+        }
+        const updatedAnime = await Anime.findByIdAndUpdate(
+            animeID,
+            { $pull: { characters: id } },
+            { new: true }
+        );
+        if (!updatedAnime) {
+            return res.status(404).json({ message: "Anime no found." });
+        }
+        console.log("updated anime -------", updatedAnime);
+        return res.status(200).json(updatedAnime);
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+};
+
 
 const putAnime = async (req, res) => {
     try{
@@ -161,4 +185,4 @@ const putAnimeRace = async (req, res) => {
 };
  
 
-module.exports = {getAnimeByID, getAnimes, postAnimes, deleteAnime, putAnimeCharacter, putAnime, getAnimeCharacters, putAnimeRace};
+module.exports = {getAnimeByID, getAnimes, postAnimes, deleteAnime, putAnimeCharacter, deleteAnimeCharacter, putAnime, getAnimeCharacters, putAnimeRace};

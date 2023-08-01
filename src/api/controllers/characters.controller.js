@@ -1,4 +1,5 @@
 const Character = require('../models/characters.model');
+const Anime = require('../models/animes.model');
 const {deleteFile} = require('../../middlewares/delete.file');
 
 //Metodo Get para Character
@@ -46,6 +47,22 @@ const postCharacter = async (req, res) => {
 const deleteCharacter = async(req, res) => {
     const {id} = req.params;
     try {
+        let animeID = -1;
+        const animes = (await Anime.find());
+        animes.forEach(anime => {
+            var index = anime.characters.indexOf(id);
+            if(index !== -1) {
+                animeID = anime._id;
+            }
+        });
+        const updatedAnime = await Anime.findByIdAndUpdate(
+            animeID,
+            { $pull: { characters: id } },
+            { new: true }
+        );
+        if (!updatedAnime) {
+            return res.status(404).json({ message: "Anime no found." });
+        }
         const deleteCharacter = await Character.findByIdAndDelete(id);
         if(!deleteCharacter){
             return res.status(404).json(`Message: ${'ID no reconocido'}`)
